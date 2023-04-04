@@ -1,0 +1,79 @@
+/* 初始化样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* 设置默认字体 */
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  /* 移除链接默认样式 */
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* 设置默认文本颜色和背景颜色 */
+  body {
+    color: #333;
+    background-color: #fff;
+  }
+  
+  /* 清除浮动 */
+  .clearfix::before,
+  .clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  /* 防止图片溢出 */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* 去除输入框默认样式 */
+  input,
+  button,
+  textarea,
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    line-height: inherit;
+  }
+  
+  /* 设置表格默认样式 */
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  
+  /* 链接样式 */
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* 禁用鼠标事件 */
+  [disabled] {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  
+  /* 手机端样式 */
+  @media screen and (max-width: 768px) {
+    /* 可以在此处添加针对手机端的样式 */
+  }
+  
