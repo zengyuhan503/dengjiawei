@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="./static/css/init.css">
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/mui/mui.min.css">
+    <script src="./static/mui/mui.js"></script>
+    <script src="./static/signature/modernizr.js"></script>
+</head>
+
+<body>
+    <div class="container signature">
+        <img src="" id="seal" alt="">
+        <div class="contract"></div>
+        <div class="submint">
+            <button type="button" class="mui-btn next-btn">申请额度</button>
+        </div>
+        <div class="signature-modal">
+            <div class="prpStart">
+                开始签名（确定签名无误后点击申请）</div>
+            <div id="signatureparent">
+
+                <div id="signature"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="clearButton" type="button" class="mui-btn mui-btn-danger ">清除</button>
+                <button id="saveButton" type="button" class="mui-btn mui-btn-primary ">确定</button>
+            </div>
+        </div>
+    </div>
+    <script src="./static/js/jquery.3.6.4.min.js"></script>
+    <script src="./static/signature/jSignature.min.noconflict.js"></script>
+    <script>
+        function handleGetContract() {
+            let uid = localStorage.getItem('user_id')
+            $.get(`http://web.dengjw.cn/api/get_contract?id=${uid}`, function (res) {
+                let data = res.data;
+                let contact = data.contract
+                let seal = data.contract_logo;
+                $("#seal").attr('src', seal)
+                $(".contract").html(contact)
+            })
+        }
+        var sigdiv = $("#signature")
+        $("#signature").jSignature()
+        $("#clearButton").click(function () {
+            sigdiv.jSignature("reset")
+        })
+        $("#saveButton").click(function(){
+            var datapair = sigdiv.jSignature("getData", "svgbase64") 
+            console.log(datapair)
+        })
+    </script>
+</body>
+
+</html>
