@@ -166,7 +166,6 @@
             let reader = new FileReader();
             reader.readAsDataURL(file)
             reader.onload = function (res) {
-
                 handleUploadImageToServer(file, res => {
                     $("#id_card_image").attr('src', reader.result)
                     id_card = res;
@@ -205,7 +204,6 @@
                     }
                 },
             });
-
         }
     </script>
 </body>

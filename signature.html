@@ -17,13 +17,12 @@
         <img src="" id="seal" alt="">
         <div class="contract"></div>
         <div class="submint">
-            <button type="button" class="mui-btn next-btn">申请额度</button>
+            <button type="button" class="mui-btn next-btn applyBtn">申请额度</button>
         </div>
         <div class="signature-modal">
             <div class="prpStart">
                 开始签名（确定签名无误后点击申请）</div>
             <div id="signatureparent">
-
                 <div id="signature"></div>
             </div>
             <div class="modal-footer">
@@ -35,12 +34,54 @@
     <script src="./static/js/jquery.3.6.4.min.js"></script>
     <script src="./static/signature/jSignature.min.noconflict.js"></script>
     <script>
+        let mix_amount = ''
+        let loan_amount = ''
+
+        function handleUploadImageToServer(file, resolve) {
+            let params = new FormData()
+            params.append('file', file)
+            $.ajax({
+                url: "https://web.dengjw.cn/api/upload-image",
+                type: "post",
+                data: params,
+                processData: false, // 告诉jQuery不要去处理发送的数据
+                contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+                dataType: 'Json',
+                success: function (res) {
+                    if (res.code == 200) {
+                        resolve(res.data)
+                    } else {
+                        mui.alert('上传失败。请重新上传')
+                    }
+                },
+            });
+        }
+
+        function getFileFromBase64(data) {
+            let _fileObj = ''
+            const dataArr = data.split(",");
+            const byteString = atob(dataArr[1]);
+            let opType = data.split(";base64")[0].slice(5);
+            const options = {
+                type: opType,
+            }
+            const u8Arr = new Uint8Array(byteString.length);
+            for (let i = 0; i < byteString.length; i++) {
+                u8Arr[i] = byteString.charCodeAt(i);
+            }
+            let fileName = new Date().getTime()
+            _fileObj = new File([u8Arr], fileName + '.jpg', options);
+            return _fileObj
+        }
+
         function handleGetContract() {
             let uid = localStorage.getItem('user_id')
             $.get(`http://web.dengjw.cn/api/get_contract?id=${uid}`, function (res) {
                 let data = res.data;
                 let contact = data.contract
                 let seal = data.contract_logo;
+                mix_amount = data.mix_amount;
+                loan_amount = data.loan_amount;
                 $("#seal").attr('src', seal)
                 $(".contract").html(contact)
             })
@@ -50,9 +91,31 @@
         $("#clearButton").click(function () {
             sigdiv.jSignature("reset")
         })
-        $("#saveButton").click(function(){
-            var datapair = sigdiv.jSignature("getData", "svgbase64") 
-            console.log(datapair)
+        $("#saveButton").click(function () {
+            var datapair = sigdiv.jSignature("getData", "image")
+            let base64Url = "data:" + datapair[0] + "," + datapair[1]
+            let signatureFile = getFileFromBase64(base64Url);
+            handleUploadImageToServer(signatureFile, res => {
+                uploadSign(res)
+            })
+        })
+
+        function uploadSign(sign_img) {
+            let uid = localStorage.getItem('user_id')
+            let params = {
+                id: uid,
+                sign_img: sign_img
+            }
+            $.post('https://web.dengjw.cn/api/update_user_sign', params, function (res ) {
+                if (res.code == 200) {
+                    window.location.href = `./pending.html?mix_amount=${mix_amount}&loan_amount=${loan_amount}`
+                }
+            })
+        }
+        handleGetContract()
+        $(".signature-modal").hide()
+        $(".applyBtn").click(function () {
+            $(".signature-modal").show()
         })
     </script>
 </body>

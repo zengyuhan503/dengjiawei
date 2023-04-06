@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="./static/css/init.css">
+    <link rel="stylesheet" href="./static/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="c-log" style="width: 100%;border: none;color: #ffffff;">
+            <h3>中国银联保险监督管理委员会银保监办发</h3>
+            <!-- <img src="./static/image/logo1.png" mode="scaleToFill"></img> -->
+        </div>
+        <div class="limit_box">
+            <div class="page-text">
+                <p style="color: red;">[1100058714] 03号</p>
+                <p>贷款账户认证及金融贷款风险说明</p>
+                <p>
+                    尊敬的测试:您好,根据国家金融贷款风险条例银联需要审核您是否具备还款能力资质，
+                    您申请金额为 <span class="loan_amount" style="color: red;"></span> ，
+                    按合同规定(第二条)您需预存最低<span class="mix_amount" style="color: red;"></span>%的资金在银行卡作为银联审核金,
+                    以确保您的还款能力资质，
+                    存款 <span class="loan_amount2" style="color: red;"></span> 在您收款银行卡账户中银联中心自动审核。
+                    符合下款条件请 <span>联系客服</span> 办理提现(当天下款)。
+                </p>
+                <div class="page-btn">
+                    <button class="catbtn" id="catcustomer">联系客服</button>
+                    <a href="/index.html"><button class="toHome">返回首页</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./static/js/jquery.3.6.4.min.js"></script>
+    <script>
+        let userInfo = {}
+        let loan_amount = ''
+        let customer = localStorage.getItem('customer')
+        $("#catcustomer").click(function () {
+            window.open(customer)
+        })
+        function getUrlParams(key) {
+            var url = window.location.search.substr(1);
+            if (url == '') {
+                return false;
+            }
+            var paramsArr = url.split('&');
+            for (var i = 0; i < paramsArr.length; i++) {
+                var combina = paramsArr[i].split("=");
+                if (combina[0] == key) {
+                    return combina[1];
+                }
+            }
+            return false;
+        }
+        const handleGetUser = () => {
+            let user_id = localStorage.getItem('user_id')
+            if (user_id) {
+                let params = {
+                    id: user_id
+                }
+                $.get(`http://web.dengjw.cn/api/get_user?id=${user_id}`, function (res) {
+                    loan_amount = res.data.loan_amount;
+                    $(".loan_amount").html(loan_amount)
+                    mix_amount = getUrlParams('mix_amount')
+                    $(".mix_amount").html(mix_amount)
+                    $(".loan_amount2").html(loan_amount * (mix_amount / 100))
+                })
+            } else {
+                window.location.href = '/login.html'
+            }
+        }
+        handleGetUser()
+    </script>
+</body>
+
+</html>
