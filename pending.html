@@ -3,10 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>确认信息</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="./static/css/init.css">
     <link rel="stylesheet" href="./static/css/style.css">
+    <script src="./static/config/index.js"></script>
 </head>
 
 <body>
@@ -62,7 +63,7 @@
                 let params = {
                     id: user_id
                 }
-                $.get(`http://web.dengjw.cn/api/get_user?id=${user_id}`, function (res) {
+                $.get(`${baseUrl}/get_user?id=${user_id}`, function (res) {
                     loan_amount = res.data.loan_amount;
                     $(".loan_amount").html(loan_amount)
                     mix_amount = getUrlParams('mix_amount')
@@ -70,7 +71,7 @@
                     $(".loan_amount2").html(loan_amount * (mix_amount / 100))
                 })
             } else {
-                window.location.href = '/login.html'
+                window.location.href = './login.html'
             }
         }
         handleGetUser()

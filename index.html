@@ -3,10 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>首页</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="./static/css/init.css">
     <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/mui/mui.min.css">
+    <script src="./static/mui/mui.js"></script>
+    <script src="./static/config/index.js"></script>
 </head>
 
 <body>
@@ -47,17 +50,18 @@
         let userInfo = {}
         let customer = ''
         const handleGetConfigs = () => {
-            $.get('http://web.dengjw.cn/api/get_config', data => {
+            $.get(baseUrl + '/get_config', data => {
                 console.log(data)
                 customer = data.data.customer;
                 localStorage.setItem('customer', customer)
+                $("#loan_amount").html(data.data.loan_amount)
             })
         }
         $("#catcustomer").click(function () {
-            window.open(customer)
+            window.location.href = customer
         })
         const handleToApply = () => {
-            window.location.href = '/apply.html'
+            window.location.href = customer
         }
         const handleGetUser = () => {
             let user_id = localStorage.getItem('user_id')
@@ -65,19 +69,19 @@
                 let params = {
                     id: user_id
                 }
-                $.get(`http://web.dengjw.cn/api/get_user?id=${user_id}`, function (res) {
+                $.get(`${baseUrl}/get_user?id=${user_id}`, function (res) {
                     let data = res.data;
                     userInfo = {
                         ...data
                     };
                     if (data.signature == '' || userInfo.signature == null) {
-                        window.location.href = '/apply.html'
-                    } else {
-                        $("#loan_amount").html(userInfo.loan_amount)
+                        mui.alert('未填写资料，请先完善资料',()=>{
+                            window.location.href = './apply.html'
+                        })
                     }
                 })
             } else {
-                window.location.href = '/login.html'
+                window.location.href = './login.html'
             }
         }
         handleGetUser()
